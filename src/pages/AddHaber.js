@@ -42,7 +42,7 @@ const AddHaber = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isImage) {
-      if (!title || type) {
+      if (!title || !type) {
         toast.error("Please fill title and type");
         return;
       }

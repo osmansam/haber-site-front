@@ -81,10 +81,7 @@ const baslikSlice = createSlice({
         state.isLoading = false;
         toast.success("Başlık başarıyla oluşturuldu.");
       })
-      .addCase(createBaslik.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(createBaslik.rejected, (state, action) => {
+      .addCase(createBaslik.rejected, (state) => {
         state.isLoading = false;
         toast.error("Başlık oluşturulamadı.");
       })
@@ -97,6 +94,7 @@ const baslikSlice = createSlice({
       })
       .addCase(getAllBasliks.rejected, (state) => {
         state.isLoading = false;
+        toast.error("Başlıklar getirilemedi.");
       })
       .addCase(deleteBaslik.pending, (state) => {
         state.isLoading = true;
