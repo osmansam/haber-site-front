@@ -39,20 +39,30 @@ export const getAllHabers = createAsyncThunk(
     }
   }
 );
-
-//create baslik
-export const createBaslik = createAsyncThunk(
-  "haber/createBaslik",
-  async (baslik, thunkAPI) => {
+//delete haber
+export const deleteHaber = createAsyncThunk(
+  "haber/deleteHaber",
+  async (id, thunkAPI) => {
     try {
-      const resp = await axios.post(`api/v1/habers/baslik`, baslik);
+      const resp = await axios.delete(`api/v1/habers/${id}`);
       return resp.data;
     } catch (error) {
       return checkForUnauthorizedResponse(error, thunkAPI);
     }
   }
 );
-
+//update haber
+export const updateHaber = createAsyncThunk(
+  "haber/updateHaber",
+  async (haber, thunkAPI) => {
+    try {
+      const resp = await axios.patch(`api/v1/habers/${haber.id}`, haber);
+      return resp.data;
+    } catch (error) {
+      return checkForUnauthorizedResponse(error, thunkAPI);
+    }
+  }
+);
 const haberSlice = createSlice({
   name: "haber",
   initialState,
@@ -69,9 +79,6 @@ const haberSlice = createSlice({
     setLoading: (state, { payload }) => {
       state.isLoading = payload;
     },
-    setBaslikHaberId: (state, { payload }) => {
-      state.baslikHaberId = payload;
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -84,15 +91,40 @@ const haberSlice = createSlice({
       })
       .addCase(createHaber.rejected, (state) => {
         state.isLoading = false;
+      })
+      .addCase(getAllHabers.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getAllHabers.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.habers = action.payload;
+      })
+      .addCase(getAllHabers.rejected, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(deleteHaber.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteHaber.fulfilled, (state, action) => {
+        state.isLoading = false;
+        toast.success("Haber başarıyla silindi.");
+      })
+      .addCase(deleteHaber.rejected, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(updateHaber.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateHaber.fulfilled, (state, action) => {
+        state.isLoading = false;
+        toast.success("Haber başarıyla güncellendi.");
+      })
+      .addCase(updateHaber.rejected, (state) => {
+        state.isLoading = false;
       });
   },
 });
 
-export const {
-  handleChange,
-  clearForm,
-  setImage,
-  setLoading,
-  setBaslikHaberId,
-} = haberSlice.actions;
+export const { handleChange, clearForm, setImage, setLoading } =
+  haberSlice.actions;
 export default haberSlice.reducer;
